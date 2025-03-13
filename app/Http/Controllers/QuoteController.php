@@ -14,6 +14,7 @@ class QuoteController extends Controller
 {
     private QuoteRepositoryInterface $quoteRepository;
 
+    // dependency injection is used to inject the QuoteRepositoryInterface into the QuoteController
     public function __construct(QuoteRepositoryInterface $quoteRepository)
     {
         $this->quoteRepository = $quoteRepository;

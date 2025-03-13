@@ -12,7 +12,7 @@ class ApiResponseClass
      */
     public static function sendResponse($result , $message){
         $response=[
-            'data'    => $result
+            'data' => $result
         ];
         if(!empty($message)){
             $response['message'] =$message;
