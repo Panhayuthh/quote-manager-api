@@ -26,7 +26,7 @@ class StoreQuoteRequest extends FormRequest
         return [
             'author' => 'required|string',
             'content' => 'required|string',
-            'user_id' => 'required|integer',
+            'userId' => 'required|integer',
         ];
     }
 

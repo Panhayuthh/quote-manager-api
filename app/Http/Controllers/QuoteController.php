@@ -9,6 +9,7 @@ use App\Models\Quote;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class QuoteController extends Controller
 {
@@ -26,9 +27,12 @@ class QuoteController extends Controller
         return ApiResponseClass::sendResponse($quote, 'Quote generated successfully');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $quotes = $this->quoteRepository->all();
+        $id = $request->userId;
+        $page = $request->page;
+
+        $quotes = $this->quoteRepository->all($id);
         return ApiResponseClass::sendResponse($quotes, 'Quotes retrieved successfully');
     }
 
@@ -37,15 +41,18 @@ class QuoteController extends Controller
         $data = [
             'content' => $request->content,
             'author' => $request->author,
-
         ];
+        $userId = $request->userId;
+
         DB::beginTransaction();
         try {
-            $quote = $this->quoteRepository->store($data, Auth::id()); # does this work with api 
+            $quote = $this->quoteRepository->store($data, $userId);
             DB::commit();
-            return ApiResponseClass::sendResponse($quote, 'Quote created successfully');
+            return ApiResponseClass::sendResponse($quote, 'Quote created successfully', 201);
+        } catch (HttpException $e) {
+            ApiResponseClass::throw($e, $e->getMessage(), $e->getStatusCode());
         } catch (\Exception $e) {
-            ApiResponseClass::rollback($e, 'An error occurred while creating quote');
+            ApiResponseClass::rollback($e, 'An error occurred while creating quote', 500);
         }
     }
 

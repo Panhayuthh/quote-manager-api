@@ -2,11 +2,12 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\QuoteController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
 
 Route::get('/', function () {
     return response()->json([
@@ -21,8 +22,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 });
 
-// Route::get('/quotes/random', [QuoteController::class, 'generate'])->middleware('auth:sanctum');
-
+Route::get('/quotes/random', [QuoteController::class, 'generate']);
 // Route::get('/quotes', [QuoteController::class, 'index']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {

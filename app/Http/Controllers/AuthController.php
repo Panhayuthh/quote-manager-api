@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
+    // inject the AuthRepositoryInterface dependency
     private AuthRepositoryInterface $authRepository;
 
     public function __construct(AuthRepositoryInterface $authRepository)
@@ -32,7 +33,7 @@ class AuthController extends Controller
             DB::commit();
             return ApiResponseClass::sendResponse($user, 'User registered successfully');
         } catch (\Exception $e) {
-            ApiResponseClass::rollback($e, 'An error occurred while registering user');
+            ApiResponseClass::rollback($e, 'An error occurred while registering user', 401);
         }
     }
 
@@ -46,7 +47,7 @@ class AuthController extends Controller
             DB::commit();
             return ApiResponseClass::sendResponse($user, 'Login successful');
         } catch (\Exception $e) {
-            ApiResponseClass::rollback($e, 'An error occurred while logging in user');
+            ApiResponseClass::rollback($e, 'An error occurred while logging in user', 401);
         }
     }
 
