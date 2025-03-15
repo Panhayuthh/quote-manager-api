@@ -19,14 +19,14 @@ class ApiResponseClass
         return response()->json($response, $status);
     }
 
-    public static function rollback($e, $message = 'An error occurred', $status = 500)
-    {   
-        // if error occurs, rollback the transaction
-        DB::rollBack();
-        self::throw($e, $message, $status);
-    }
+    // public static function rollback($e, $message = 'An error occurred', $status = 500)
+    // {   
+    //     // if error occurs, rollback the transaction
+    //     DB::rollBack();
+    //     self::throw($e, $message, $status);
+    // }
 
-    public static function throw($e, $message = 'An error occurred', $status)
+    public static function sendError($e, $message = 'An error occurred', $status)
     {
         throw new HttpResponseException(response()->json([
             'message' => $message,

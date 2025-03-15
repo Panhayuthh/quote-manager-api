@@ -50,9 +50,10 @@ class QuoteController extends Controller
             DB::commit();
             return ApiResponseClass::sendResponse($quote, 'Quote created successfully', 201);
         } catch (HttpException $e) {
-            ApiResponseClass::throw($e, $e->getMessage(), $e->getStatusCode());
+            DB::rollBack();
+            ApiResponseClass::sendError($e, $e->getMessage(), $e->getStatusCode());
         } catch (\Exception $e) {
-            ApiResponseClass::rollback($e, 'An error occurred while creating quote', 500);
+            ApiResponseClass::sendError($e, 'An error occurred while creating quote', 500);
         }
     }
 
@@ -64,7 +65,8 @@ class QuoteController extends Controller
             DB::commit();
             return ApiResponseClass::sendResponse([], 'Quote deleted successfully');
         } catch (\Exception $e) {
-            ApiResponseClass::rollback($e, 'An error occurred while deleting quote');
+            DB::rollBack();
+            ApiResponseClass::sendError($e, 'An error occurred while deleting quote', 500);
         }
     }
 }
