@@ -12,36 +12,44 @@ class AuthRepository implements AuthRepositoryInterface
      * Create a new class instance.
      */
 
-    public function register($data)
-    {
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return [
-            'token' => $token,
-            'user' => [ 'name' => $user->name, 'email' => $user->email ],
-        ];
-    }
+     public function register($data)
+     {
+         try {
+             $user = User::create([
+                 'name' => $data['name'],
+                 'email' => $data['email'],
+                 'password' => bcrypt($data['password']),
+             ]);
+     
+             $token = $user->createToken('auth_token')->plainTextToken;
+     
+             return [
+                 'token' => $token,
+                 'user' => [ 'name' => $user->name, 'email' => $user->email ],
+             ];
+         } catch (\Exception $e) {
+             throw $e;
+         }
+     }
 
     public function login($credentials)
     {
-        $user = User::where('email', $credentials['email'])->first();
+        try {
+            $user = User::where('email', $credentials['email'])->first();
 
-        if (! $user || !Hash::check($credentials['password'], $user->password)) {
+            if (! $user || !Hash::check($credentials['password'], $user->password)) {
             throw new \Exception('Password is incorrect');
-        }
+            }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+            $token = $user->createToken('auth_token')->plainTextToken;
 
-        return [
+            return [
             'token' => $token,
             'user' => [ 'name' => $user->name, 'email' => $user->email ],
-        ];
+            ];
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
     public function logout($request)
